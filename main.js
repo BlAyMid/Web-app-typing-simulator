@@ -4,6 +4,7 @@ let errors = document.getElementById('errors_value');
 let start = document.getElementById('start');
 let times = document.getElementById('time_value');
 
+var letters = ['Q','q','W','w','E','e','R','r','T','t','Y','y','U','u','I','i','O','o','P','p','A','a','S','s','D','d','F','f','G','g','H','h','J','j','K','k','L','l','Z','z','X','x','C','c','V','v','B','b','N','n','M','m',',','.',' ','-']
 let done_count = 0;
 let errors_count = 0;
 let all = 0;
@@ -27,7 +28,7 @@ function connect() { //функция для получения текста
 
     elem.innerHTML = x;
 
-    x = x.split(''); //делю весь текст на отдельные части массива для того чтобы перебирать после
+    x = x.split(''); //делю весь текст на отдельные части массива, для того чтобы перебирать после
 
     // console.log(x);
 }
@@ -37,35 +38,38 @@ function keyup() { //функция для прослушивания нажат
 }
 
 function press(e) { // функция с 3 условными конструкциями для проверки правильно нажали клавишу или нет
-    if (e.key == 'Shift' || e.key == 'Alt' || e.key == 'Enter') { //проверка на данные клавиши чтобы было меньше ошибок
-        console.log('Система');
-    } else if (e.key == x[check]) { //проверка нажатых клавишь на соответствие тексту
-        done_count++; all++; characters++;
-        x.splice(0,1); //удаляю первый элемент в случае если верно нажали клавишу
-        x = x.join(''); //соединяю массив в текст для обновления букв
-        elem.innerHTML = x;
-        x = x.split(''); //снова разделяю текст для проверки следующей клавиши
-        // console.log(x);
-        progress.innerHTML = Math.round((done_count/all)*100);
-        errors.innerHTML = errors_count;
-    } else { //в случае ошибочного ответа выполняет данную функцию
-        errors_count++; all++; characters++;
-        progress.innerHTML = Math.round((done_count/all)*100);
-        errors.innerHTML = errors_count;
-        if (errors_count > (x.length/30)) { //проверка на количество ошибок после получения последней
-            let fail = confirm('Вы проиграли! Начните заного! Ваша скорость: ' + characters + ' CPM');
-            if (fail) {
-                location.reload();
-            } else {
-                location.reload();
+    let index;
+    for (index = 0; index < letters.length; ++index) {
+        if (event.key == letters[index]) {
+            if (event.key == x[0]) {
+                done_count++; all++; characters++;
+                x.splice(0, 1); //удаляю первый элемент в случае если верно нажали клавишу
+                x = x.join(''); //соединяю массив в текст для обновления букв
+                elem.innerHTML = x;
+                x = x.split(''); //снова разделяю текст для проверки следующей клавиши
+                // console.log(x);
+                progress.innerHTML = Math.round((done_count / all * 100));
+                errors.innerHTML = errors_count;
+            } else { //в случае ошибочного ответа выполняет данную функцию
+                errors_count++; characters++; all++;
+                progress.innerHTML = Math.round((done_count / all) * 100);
+                errors.innerHTML = errors_count;
+                if (errors_count > (x.length / 30)) { //проверка на количество ошибок после получения последней
+                    let fail = confirm('Вы проиграли! Начните заново! Ваша скорость: ' + characters + ' CPM');
+                    if (fail) {
+                        location.reload();
+                    } else {
+                        location.reload();
+                    }
+                }
+            }
         }
-    }
-}
-    if (done_count == x.length) { //единственный вариант выйграть, нужно полностью написать текст с малым кол-вом ошибок
-        alert('Вы выйграли! Ваша скорость: ' + characters + ' CPM');
-        let win = confirm('Хотите поиграть еще?');
-        if (win) {
-            location.reload();
+        if (done_count == x.length) { //единственный вариант выйграть, нужно полностью написать текст с малым кол-вом ошибок
+            alert('Вы выйграли! Ваша скорость: ' + characters + ' CPM');
+            let win = confirm('Хотите поиграть еще?');
+            if (win) {
+                location.reload();
+            }
         }
     }
 }
